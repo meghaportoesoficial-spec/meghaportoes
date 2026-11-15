@@ -1,6 +1,6 @@
 /* ==========================================================
    MINHA ÁREA — pedidos do cliente (salvos no navegador)
-   O andamento pode ser atualizado pelo dono em data/status.json
+   O andamento pode ser atualizado pelo dono em status.json
    ========================================================== */
 (function () {
   const M = window.MEGHA, UI = window.MeghaUI;
@@ -14,7 +14,7 @@
   let tab = 'pedidos';
 
   const save = () => store.set(M.storageKey, orders);
-  fetch('data/status.json?t=' + Date.now()).then(r => r.ok ? r.json() : {}).then(j => { status = j || {}; render(); }).catch(() => { });
+  fetch('status.json?t=' + Date.now()).then(r => r.ok ? r.json() : {}).then(j => { status = j || {}; render(); }).catch(() => { });
 
   const etapaDe = o => { const st = status[o.codigo]; return st && Number.isInteger(st.etapa) ? st.etapa : (o.etapa || 0); };
 

@@ -1,7 +1,7 @@
 /* ==========================================================
    PEÇAS INTERATIVAS (portão, esquadria, vidro, ACM, ripado,
    gabinete, guarda-corpo, corrimão). Usadas na página de
-   serviços e no orçamento. Estilos em css/pieces.css
+   serviços e no orçamento. Estilos em pieces.css
    ========================================================== */
 (function () {
   const fmt = n => Number(n).toFixed(2).replace('.', ',');
