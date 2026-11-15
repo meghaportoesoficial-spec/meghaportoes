@@ -36,6 +36,7 @@
       </div>
       ${timeline(e)}
       ${st.nota ? `<div class="note">💬 ${esc(st.nota)}</div>` : ''}
+      ${(o.fotos || []).length ? `<div class="thumbs">${o.fotos.map((d, i) => `<div class="th"><img src="${d}" alt="Foto de referência ${i + 1}"></div>`).join('')}</div>` : ''}
       <div class="kv">
         <div><span>Material</span><b>${esc(o.materialNome)}</b></div>
         <div><span>Cor</span><b><span class="dot" style="background:${esc(o.cor)}"></span>${esc(o.corNome)}</b></div>
@@ -63,7 +64,8 @@
     const concl = orders.filter(o => etapaDe(o) >= 5).length;
     root.innerHTML = `
       <div class="area-head reveal in">
-        <div class="who"><div class="avatar">${esc((nome[0] || 'M').toUpperCase())}</div><div><h2>${nome ? 'Olá, ' + esc(nome.split(' ')[0]) + '!' : 'Bem-vindo!'}</h2><span class="muted">${orders.length ? orders.length + ' pedido(s) neste aparelho' : 'Nenhum pedido ainda'}</span></div></div>
+        <div class="who"><div class="avatar">${perfil.foto ? `<img src="${perfil.foto}" alt="Sua foto de perfil">` : esc((nome[0] || 'M').toUpperCase())}</div><div><h2>${nome ? 'Olá, ' + esc(nome.split(' ')[0]) + '!' : 'Bem-vindo!'}</h2><span class="muted">${orders.length ? orders.length + ' pedido(s) neste aparelho' : 'Nenhum pedido ainda'}</span>
+          <div class="avatar-edit"><label class="chip-btn" style="cursor:pointer">${ic('edit')} ${perfil.foto ? 'Trocar foto' : 'Adicionar foto de perfil'}<input type="file" id="avIn" accept="image/*" hidden></label>${perfil.foto ? `<button class="chip-btn" id="avDel" type="button">${ic('trash')} Remover</button>` : ''}</div></div></div>
         <div class="stats" style="grid-template-columns:repeat(3,auto);gap:10px"><div class="stat"><b>${orders.length}</b><span>Pedidos</span></div><div class="stat"><b>${concl}</b><span>Concluídos</span></div><div class="stat" style="min-width:140px"><b style="font-size:1.4rem">${brl(total)}</b><span>Total estimado</span></div></div>
       </div>
       <div class="tabs">
@@ -72,6 +74,12 @@
         <button class="seg ${tab === 'dados' ? 'on' : ''}" data-t="dados">${ic('user')} Meus dados</button>
       </div>
       <div id="tabBody"></div>`;
+    $('#avIn').onchange = async e => {
+      const f = e.target.files[0]; if (!f) return;
+      const d = await UI.square(f, 240, .82); if (!d) return toast('Não consegui ler essa imagem.');
+      store.set(M.perfilKey, Object.assign({}, store.get(M.perfilKey, {}) || {}, { foto: d })); UI.refreshAvatar(); toast('Foto de perfil atualizada ✓'); render();
+    };
+    const del = $('#avDel'); if (del) del.onclick = () => { const p = store.get(M.perfilKey, {}) || {}; delete p.foto; store.set(M.perfilKey, p); UI.refreshAvatar(); toast('Foto removida'); render(); };
     $$('.tabs .seg', root).forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
     ({ pedidos: tabPedidos, codigo: tabCodigo, dados: tabDados })[tab]();
   }
@@ -131,7 +139,7 @@
       <button class="btn" type="submit"><span>Salvar dados</span></button></form>
       <div class="card"><h3>Backup e privacidade</h3><p class="muted">Tudo fica guardado só neste navegador. Faça um backup para levar seus pedidos para outro aparelho.</p>
         <div class="cta-row"><button class="btn ghost sm" id="exp" type="button">${ic('download')}<span>Baixar backup</span></button><label class="btn ghost sm" style="cursor:pointer">${ic('plus')}<span>Importar backup</span><input type="file" id="imp" accept="application/json" hidden></label><button class="btn ghost sm" id="wipe" type="button">${ic('trash')}<span>Apagar tudo</span></button></div></div></div>`;
-    $('#pf').onsubmit = e => { e.preventDefault(); store.set(M.perfilKey, { nome: $('#p-nome').value.trim(), whats: $('#p-whats').value.trim(), email: $('#p-email').value.trim(), cidade: $('#p-cid').value.trim(), endereco: $('#p-end').value.trim() }); toast('Dados salvos ✓'); };
+    $('#pf').onsubmit = e => { e.preventDefault(); store.set(M.perfilKey, Object.assign({}, store.get(M.perfilKey, {}) || {}, { nome: $('#p-nome').value.trim(), whats: $('#p-whats').value.trim(), email: $('#p-email').value.trim(), cidade: $('#p-cid').value.trim(), endereco: $('#p-end').value.trim() })); toast('Dados salvos ✓'); };
     $('#exp').onclick = () => {
       const blob = new Blob([JSON.stringify({ pedidos: orders, perfil: store.get(M.perfilKey, {}) }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'megha-meus-pedidos.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
@@ -141,7 +149,7 @@
       r.onload = () => { try { const j = JSON.parse(r.result); if (Array.isArray(j.pedidos)) { const known = new Set(orders.map(o => o.codigo)); orders = orders.concat(j.pedidos.filter(o => o && o.codigo && !known.has(o.codigo))); save(); } if (j.perfil) store.set(M.perfilKey, j.perfil); toast('Backup importado ✓'); tab = 'pedidos'; render(); } catch (err) { toast('Arquivo inválido.'); } };
       r.readAsText(f);
     };
-    $('#wipe').onclick = () => { if (confirm('Apagar todos os pedidos e dados deste navegador?')) { orders = []; save(); store.set(M.perfilKey, {}); toast('Dados apagados'); render(); } };
+    $('#wipe').onclick = () => { if (confirm('Apagar todos os pedidos e dados deste navegador?')) { orders = []; save(); store.set(M.perfilKey, {}); UI.refreshAvatar(); toast('Dados apagados'); render(); } };
   }
 
   render();

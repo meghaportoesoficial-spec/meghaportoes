@@ -9,7 +9,7 @@ Site multipágina, sem build e sem dependências: HTML + CSS + JS puro.
 (Todos os caminhos são relativos, então funciona em subpasta ou domínio próprio.)
 
 ## Páginas
-`index.html` início · `servicos.html` peças interativas · `orcamento.html` orçamento animado · `minha-area.html` área do cliente · `galeria.html` · `sobre.html` · `contato.html` · `404.html`
+`index.html` início · `servicos.html` peças interativas · `orcamento.html` orçamento animado · `minha-area.html` área do cliente · `sobre.html` · `contato.html` · `404.html`
 
 ## O que editar
 - **`config.js`** → telefones, endereço, Instagram, materiais, cores, extras, tamanhos e **PREÇOS**.

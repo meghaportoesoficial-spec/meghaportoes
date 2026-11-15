@@ -355,3 +355,35 @@ summary::after { content: '+'; font: 900 1.5rem var(--font-head); color: var(--y
 .quote > * { min-width: 0; }
 .portrait::before { inset: 20px -12px -20px 12px; }
 .portrait .tag { left: 8px; }
+
+/* ---------- fontes por página ---------- */
+.brand-txt, .stat b, .code-sm, .code, .price-card b { font-family: 'Exo 2', 'Segoe UI', sans-serif; }
+body.f-oswald { --font-head: 'Oswald', 'Exo 2', sans-serif; }
+body.f-sora { --font-head: 'Sora', 'Exo 2', sans-serif; }
+body.f-serif { --font-head: 'Playfair Display', Georgia, serif; }
+body.f-raj { --font-head: 'Rajdhani', 'Exo 2', sans-serif; }
+body.f-oswald h1, body.f-oswald h2, body.f-sora h1, body.f-sora h2, body.f-serif h1, body.f-serif h2, body.f-raj h1, body.f-raj h2 { font-style: normal; }
+body.f-oswald h1, body.f-oswald h2 { letter-spacing: .02em; font-weight: 700; }
+body.f-sora h1, body.f-sora h2 { text-transform: none; font-weight: 800; letter-spacing: -.03em; }
+body.f-serif h1, body.f-serif h2 { text-transform: none; font-weight: 800; }
+body.f-raj h1, body.f-raj h2 { font-weight: 700; letter-spacing: .03em; }
+body.f-sora .avatar, body.f-serif .portrait .tag { font-style: normal; }
+
+/* ---------- modelos de portões ---------- */
+.model-card { border-radius: 24px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .3s var(--ease), border-color .3s; }
+.model-card:hover { transform: translateY(-6px); border-color: var(--yellow); }
+.model-stage { height: 220px; } .model-card .model-stage.stage { border-radius: 0; border: 0; border-bottom: 1px solid var(--line); box-shadow: none; min-height: 0; }
+.model-info { padding: 16px 18px 20px; display: grid; gap: 4px; } .model-info b { font: 800 1.15rem var(--font-head); } .model-info span { font-size: .84rem; margin-bottom: 10px; }
+
+/* ---------- foto de referência e perfil ---------- */
+.upload { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.thumbs .th { position: relative; width: 84px; height: 84px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); animation: swap .5s var(--ease); }
+.thumbs .th img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+.thumbs .th button { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .75); color: #fff; cursor: pointer; font-size: .8rem; line-height: 1; }
+.order .thumbs .th { width: 70px; height: 70px; } .order .thumbs { margin: 0 0 16px; }
+.area-link .av { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; flex: none; }
+.area-link .av.has { box-shadow: 0 0 0 2px var(--yellow); } .area-link .av img { width: 100%; height: 100%; object-fit: cover; }
+.avatar { overflow: hidden; position: relative; } .avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-edit { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.seg { display: inline-flex; align-items: center; gap: 7px; }

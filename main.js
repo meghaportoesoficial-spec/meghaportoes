@@ -66,7 +66,7 @@
   const here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   const links = [
     ['index.html', 'Início'], ['servicos.html', 'Serviços'], ['orcamento.html', 'Orçamento'],
-    ['galeria.html', 'Galeria'], ['sobre.html', 'Sobre'], ['contato.html', 'Contato']
+    ['sobre.html', 'Sobre'], ['contato.html', 'Contato']
   ];
   const nPedidos = (store.get(M.storageKey, []) || []).length;
   const header = $('#site-header');
@@ -80,7 +80,7 @@
         </a>
         <nav class="menu" id="menu" aria-label="Principal">
           ${links.map(([h, t]) => `<a href="${h}" class="${here === h ? 'on' : ''}">${t}</a>`).join('')}
-          <a href="minha-area.html" class="area-link ${here === 'minha-area.html' ? 'on' : ''}">${ic('user')} Minha área${nPedidos ? `<span class="badge">${nPedidos}</span>` : ''}</a>
+          <a href="minha-area.html" class="area-link ${here === 'minha-area.html' ? 'on' : ''}"><span class="av">${ic('user')}</span> Minha área${nPedidos ? `<span class="badge">${nPedidos}</span>` : ''}</a>
         </nav>
         <div class="nav-actions">
           <button class="icon-btn" id="themeBtn" aria-label="Alternar tema claro/escuro">${ic('sun', 'only-dark')}${ic('moon', 'only-light')}</button>
@@ -157,7 +157,33 @@
     addEventListener('pointermove', e => { g.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; }, { passive: true });
   }
 
-  window.MeghaUI = { $, $$, ic, icons, brl, wa, store, toast, reduce };
+  /* reduz foto para caber no armazenamento do navegador */
+  function loadImg(file) {
+    return new Promise(res => {
+      const r = new FileReader();
+      r.onload = () => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = r.result; };
+      r.onerror = () => res(null); r.readAsDataURL(file);
+    });
+  }
+  async function shrink(file, max = 900, q = .72) {
+    const im = await loadImg(file); if (!im) return null;
+    const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', q);
+  }
+  async function square(file, size = 240, q = .8) {
+    const im = await loadImg(file); if (!im) return null;
+    const s = Math.min(im.width, im.height), c = document.createElement('canvas'); c.width = c.height = size;
+    c.getContext('2d').drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, 0, 0, size, size); return c.toDataURL('image/jpeg', q);
+  }
+  function refreshAvatar() {
+    const av = document.querySelector('.area-link .av'); if (!av) return;
+    const p = store.get(M.perfilKey, {}) || {};
+    av.innerHTML = p.foto ? `<img src="${p.foto}" alt="Foto de perfil">` : ic('user');
+    av.classList.toggle('has', !!p.foto);
+  }
+  window.MeghaUI = { $, $$, ic, icons, brl, wa, store, toast, reduce, shrink, square, refreshAvatar };
+  refreshAvatar();
 
   /* ---------- revelar ao rolar ---------- */
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
@@ -169,10 +195,10 @@
   const co = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return; co.unobserve(e.target);
     const el = e.target, to = +el.dataset.count, suf = el.dataset.suffix || '', t0 = performance.now(), d = 1400;
-    const step = t => { const p = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suf; if (p < 1) requestAnimationFrame(step); };
+    const step = t => { const p = Math.min(1, (t - t0) / d); el.textContent = (el.dataset.prefix || '') + Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString('pt-BR') + suf; if (p < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   }), { threshold: .5 }) : null;
-  $$('[data-count]').forEach(el => co ? co.observe(el) : el.textContent = el.dataset.count + (el.dataset.suffix || ''));
+  $$('[data-count]').forEach(el => co ? co.observe(el) : el.textContent = (el.dataset.prefix || '') + Number(el.dataset.count).toLocaleString('pt-BR') + (el.dataset.suffix || ''));
 
   /* ---------- tilt 3D ---------- */
   if (!reduce) {

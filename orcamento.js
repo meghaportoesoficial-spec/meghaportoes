@@ -12,7 +12,7 @@
   const corNome = (m, hex) => ((colorsFor(m).find(c => c[1] === hex) || [])[0]) || 'Personalizada';
   const perfil = store.get(M.perfilKey, {}) || {};
 
-  const s = { servico: 'portao', tipo: '', material: '', cor: '', w: 0, h: 0, qtd: 1, instalacao: true, extras: [], step: 0, max: 0,
+  const s = { servico: 'portao', tipo: '', material: '', cor: '', w: 0, h: 0, qtd: 1, instalacao: true, extras: [], fotos: [], step: 0, max: 0,
     cliente: { nome: perfil.nome || '', whats: perfil.whats || '', email: perfil.email || '', cidade: perfil.cidade || '', endereco: perfil.endereco || '', loc: '', obs: '', data: '' } };
 
   let ctrl = null;
@@ -100,6 +100,9 @@
         <div class="field"><label for="f-end">Endereço da obra</label><input id="f-end" autocomplete="street-address" value="${esc(c.endereco)}" placeholder="Rua, número, referência"></div>
         <div class="field"><button class="chip-btn" type="button" id="geo">${ic('pin')} Usar minha localização atual</button><span class="muted" id="geoTxt" style="font-size:.85rem">${c.loc ? '📍 Localização anexada.' : ''}</span></div>
         <div class="field"><label for="f-obs">Observações</label><textarea id="f-obs" rows="3" placeholder="Algo que devemos saber? (medidas exatas, prazo, referências…)">${esc(c.obs)}</textarea></div>
+        <div class="field"><label>Foto de referência (opcional)</label>
+          <div class="upload"><input type="file" id="f-foto" accept="image/*" multiple hidden><button class="chip-btn" type="button" id="addFoto">${ic('plus')} Adicionar foto</button><span class="muted" style="font-size:.85rem">Até 3 fotos: o local, a medida ou um modelo que você gostou.</span></div>
+          <div class="thumbs" id="thumbs"></div></div>
       </form>${nav(true, 'Revisar pedido')}`; },
     // 5 — revisar
     () => { const sv = SV[s.servico], t = calc(), c = s.cliente, tipoN = sv.tipos.find(x => x[0] === s.tipo)[1];
@@ -114,6 +117,7 @@
         <div><span>Instalação</span><b>${s.instalacao ? 'Sim, pela Megha' : 'Não'}</b></div>
         <div><span>Cliente</span><b>${esc(c.nome)}<br>${esc(c.whats)}${c.email ? '<br>' + esc(c.email) : ''}</b></div>
         <div><span>Local</span><b>${esc(c.cidade)}${c.endereco ? '<br>' + esc(c.endereco) : ''}</b></div>
+        ${s.fotos.length ? `<div><span>Fotos</span><b>${s.fotos.length} foto(s) de referência</b></div>` : ''}
         <div><span>Estimativa</span><b style="color:var(--yellow-ink)">${brl(t.total)}</b></div>
       </div>
       <p class="muted" style="font-size:.88rem">Valor de referência: o preço final depende da medição no local e é confirmado pelo Carlito.</p>${nav(true, 'Finalizar orçamento', 'send')}`; }
@@ -158,6 +162,15 @@
       $$('[data-x]').forEach(i => i.onchange = () => { s.extras = $$('[data-x]').filter(x => x.checked).map(x => x.dataset.x); update(); });
     }
     if (n === 4) {
+      drawThumbs();
+      $('#addFoto').onclick = () => $('#f-foto').click();
+      $('#f-foto').onchange = async e => {
+        const files = Array.from(e.target.files).slice(0, 3 - s.fotos.length);
+        if (!files.length) return toast('Máximo de 3 fotos.');
+        toast('Processando foto…');
+        for (const f of files) { const d = await UI.shrink(f, 900, .72); if (d) s.fotos.push(d); }
+        e.target.value = ''; drawThumbs();
+      };
       const w = $('#f-whats'); w.addEventListener('input', () => { w.value = maskPhone(w.value); });
       $('#geo').onclick = () => {
         if (!navigator.geolocation) return toast('Seu navegador não permite localização.');
@@ -171,6 +184,12 @@
     if (n === 5) $('#send').onclick = submit;
   }
 
+  function drawThumbs() {
+    const t = $('#thumbs'); if (!t) return;
+    t.innerHTML = s.fotos.map((d, i) => `<div class="th"><img src="${d}" alt="Foto de referência ${i + 1}"><button type="button" data-i="${i}" aria-label="Remover foto">✕</button></div>`).join('');
+    t.onclick = e => { const b = e.target.closest('button'); if (b) { s.fotos.splice(+b.dataset.i, 1); drawThumbs(); } };
+    const add = $('#addFoto'); if (add) add.disabled = s.fotos.length >= 3;
+  }
   const maskPhone = v => { const d = v.replace(/\D/g, '').slice(0, 11); if (d.length > 6) return `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`; if (d.length > 2) return `(${d.slice(0, 2)}) ${d.slice(2)}`; return d; };
 
   function readForm(validate) {
@@ -202,7 +221,7 @@
       `*Medidas:* ${fmt(o.w)} × ${fmt(o.h)} m (${o.qtd} un.)`, `*Instalação:* ${o.instalacao ? 'Sim' : 'Não'}`,
       `*Extras:* ${o.extras.length ? o.extras.map(e => e.nome).join(', ') : '—'}`, `*Estimativa:* ${brl(o.total)}`, '',
       `*Cliente:* ${c.nome}`, `*WhatsApp:* ${c.whats}`, c.email ? `*E-mail:* ${c.email}` : '', `*Local:* ${c.cidade}${c.endereco ? ' — ' + c.endereco : ''}`,
-      c.loc ? `*Mapa:* ${c.loc}` : '', c.data ? `*Data desejada:* ${c.data.split('-').reverse().join('/')}` : '', c.obs ? `*Obs.:* ${c.obs}` : ''].filter((x, i, a) => x !== '' || a[i - 1] !== '').join('\n');
+      c.loc ? `*Mapa:* ${c.loc}` : '', c.data ? `*Data desejada:* ${c.data.split('-').reverse().join('/')}` : '', c.obs ? `*Obs.:* ${c.obs}` : '', o.fotos && o.fotos.length ? `*Fotos de referência:* ${o.fotos.length} (vou enviar aqui na conversa)` : ''].filter((x, i, a) => x !== '' || a[i - 1] !== '').join('\n');
   }
   function submit() {
     const cc = s.cliente; if (!cc.nome || !cc.whats || !cc.cidade) return go(4, true);
@@ -212,18 +231,27 @@
       tipo: s.tipo, tipoNome: sv.tipos.find(x => x[0] === s.tipo)[1], material: s.material, materialNome: M.materiais[s.material].nome,
       cor: s.cor, corNome: corNome(s.material, s.cor), w: s.w, h: s.h, qtd: s.qtd, instalacao: s.instalacao,
       extras: sv.extras.filter(e => s.extras.includes(e[0])).map(e => ({ k: e[0], nome: e[1], preco: e[2] })),
-      total: Math.round(t.total), cliente: Object.assign({}, s.cliente), etapa: 0
+      total: Math.round(t.total), cliente: Object.assign({}, s.cliente), fotos: s.fotos.slice(), etapa: 0
     };
     const list = store.get(M.storageKey, []) || [];
-    list.unshift(o); store.set(M.storageKey, list);
-    store.set(M.perfilKey, { nome: o.cliente.nome, whats: o.cliente.whats, email: o.cliente.email, cidade: o.cliente.cidade, endereco: o.cliente.endereco });
+    list.unshift(o);
+    if (!store.set(M.storageKey, list)) { o.fotos = []; store.set(M.storageKey, list); toast('Pedido salvo, mas as fotos não couberam no armazenamento — envie-as pelo WhatsApp.'); }
+    store.set(M.perfilKey, Object.assign({}, store.get(M.perfilKey, {}) || {}, { nome: o.cliente.nome, whats: o.cliente.whats, email: o.cliente.email, cidade: o.cliente.cidade, endereco: o.cliente.endereco }));
     $('#doneCode').textContent = o.codigo;
     $('#doneMsg').textContent = `Obrigado, ${o.cliente.nome.split(' ')[0]}! Seu orçamento de ${o.servicoNome.toLowerCase()} (${brl(o.total)}) foi registrado.`;
     $('#doneWa').href = wa(buildMsg(o));
+    const sh = $('#doneShare'); sh.hidden = !(o.fotos && o.fotos.length);
+    sh.onclick = async () => {
+      try {
+        const files = await Promise.all(o.fotos.map(async (d, i) => new File([await (await fetch(d)).blob()], `referencia-${i + 1}.jpg`, { type: 'image/jpeg' })));
+        if (navigator.canShare && navigator.canShare({ files })) await navigator.share({ files, text: `Fotos de referência — pedido ${o.codigo}` });
+        else toast('Abra a conversa do WhatsApp e anexe as fotos pelo clipe 📎');
+      } catch (e) { }
+    };
     const m = $('#doneModal'); m.classList.add('open'); UI.confetti(); ctrl.toggle(true);
     const badge = $('.area-link'); if (badge) { let b = badge.querySelector('.badge'); if (!b) { b = document.createElement('span'); b.className = 'badge'; badge.appendChild(b); } b.textContent = list.length; }
   }
-  $('#newQuote').onclick = () => { $('#doneModal').classList.remove('open'); applyService('portao'); s.max = 0; go(0, true); };
+  $('#newQuote').onclick = () => { $('#doneModal').classList.remove('open'); s.fotos = []; applyService('portao'); s.max = 0; go(0, true); };
   $('#openBtn').onclick = () => ctrl.toggle();
 
   /* ---------- início ---------- */
@@ -232,10 +260,21 @@
   applyService('portao');
   if (draft && SV[draft.servico]) {
     applyService(draft.servico);
-    Object.assign(s, { tipo: draft.tipo, material: draft.material, cor: draft.cor, w: draft.w, h: draft.h, qtd: draft.qtd || 1, instalacao: !!draft.instalacao, extras: (draft.extras || []).map(e => e.k) });
+    Object.assign(s, { tipo: draft.tipo, material: draft.material, cor: draft.cor, w: draft.w, h: draft.h, qtd: draft.qtd || 1, instalacao: !!draft.instalacao, extras: (draft.extras || []).map(e => e.k), fotos: draft.fotos || [] });
     mountStage(); update(); s.max = 4;
     try { localStorage.removeItem(M.rascunhoKey); } catch (e) { }
     go(3); setTimeout(() => toast('Pedido carregado — ajuste o que quiser e finalize.'), 600);
-  } else if (q && SV[q]) { applyService(q); s.max = 1; go(1); }
+  } else if (q && SV[q]) {
+    applyService(q);
+    const sp = new URLSearchParams(location.search), sv = SV[q];
+    const t = sp.get('tipo'), mt = sp.get('m'), c = sp.get('c'), w = parseFloat(sp.get('w')), h = parseFloat(sp.get('h'));
+    if (t && sv.tipos.some(x => x[0] === t)) s.tipo = t;
+    if (mt && sv.materiais.includes(mt)) s.material = mt;
+    if (c && /^[0-9a-f]{6}$/i.test(c)) s.cor = '#' + c; else s.cor = colorsFor(s.material)[0][1];
+    if (w >= sv.w[0] && w <= sv.w[1]) s.w = w;
+    if (h >= sv.h[0] && h <= sv.h[1]) s.h = h;
+    update(); s.max = 2; go(sp.get('tipo') ? 2 : 1);
+    if (sp.get('tipo')) setTimeout(() => toast('Modelo carregado — ajuste medidas e cor se quiser.'), 700);
+  }
   else go(0);
 })();
