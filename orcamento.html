@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orçamento online — Megha Portões</title>
+<meta name="description" content="Monte seu orçamento com pré-visualização animada: escolha serviço, material, cor, tamanho e instalação.">
+<meta name="theme-color" content="#050b1e">
+<meta property="og:title" content="Megha Portões — Lado a lado da Tecnologia e Inovação">
+<meta property="og:description" content="Monte seu orçamento online e veja seu portão ganhar forma na tela.">
+<meta property="og:image" content="assets/img/banner.webp">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;0,800;1,700;1,800;1,900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pieces.css">
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<section class="page-hero"><div class="wrap">
+  <span class="eyebrow">Orçamento online</span>
+  <h1>Monte o seu <span class="grad">projeto</span></h1>
+  <p>Escolha serviço, material, cor e medidas e veja a peça mudar em tempo real. No fim você recebe um código e envia tudo para o Carlito.</p>
+</div></section>
+
+<section style="padding-top:26px"><div class="wrap quote">
+  <aside class="quote-side" id="quoteSide">
+    <div id="quoteStage"></div>
+    <div class="chips-info" id="chips"></div>
+    <div class="price-card" id="priceCard">
+      <span class="lbl">Estimativa</span>
+      <b id="price">R$ 0,00</b>
+      <button class="btn ghost sm" id="openBtn" type="button"><span>Abrir / Animar</span></button>
+      <small>Valor de referência. O preço final é confirmado após a medição.</small>
+    </div>
+  </aside>
+
+  <div class="card quote-main">
+    <div class="stepper" id="stepper" role="tablist" aria-label="Etapas do orçamento"></div>
+    <div id="panels"></div>
+  </div>
+</div></section>
+</main>
+
+<div class="modal" id="doneModal" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+  <div class="modal-box">
+    <div class="ok-ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="48" transform="rotate(-90 52 52)"/><path d="M30 54l15 15 30-33"/></svg></div>
+    <h2 id="doneTitle" style="font-size:2rem">Pedido criado! 🎉</h2>
+    <p class="muted" id="doneMsg"></p>
+    <div class="code" id="doneCode">MP-000000-XXXX</div>
+    <p class="muted" style="font-size:.92rem">Para o Carlito receber seu orçamento, <b>toque no botão do WhatsApp</b>. Seu pedido também ficou salvo em “Minha área”.</p>
+    <div class="cta-row">
+      <a class="btn wa" id="doneWa" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-whatsapp"/></svg><span>Enviar pelo WhatsApp</span></a>
+      <a class="btn ghost" href="minha-area.html"><svg class="ic"><use href="#i-user"/></svg><span>Ver minha área</span></a>
+    </div>
+    <p style="margin:18px 0 0"><button class="chip-btn" id="newQuote" type="button"><svg class="ic"><use href="#i-plus"/></svg> Fazer outro orçamento</button></p>
+  </div>
+</div>
+
+<footer id="site-footer"></footer>
+<script src="js/config.js"></script>
+<script src="js/pieces.js"></script>
+<script src="js/main.js"></script>
+<script src="js/orcamento.js"></script>
+</body>
+</html>

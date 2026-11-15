@@ -1,0 +1,4 @@
+{
+  "_ajuda": "Para atualizar o andamento de um pedido, copie o código (ex.: MP-261114-AB12) e crie uma entrada abaixo. etapa: 0 Recebido, 1 Em análise, 2 Medição, 3 Produção, 4 Instalação, 5 Concluído. Campos opcionais: nota, valorFinal, previsao (AAAA-MM-DD).",
+  "MP-EXEMPLO-0000": { "etapa": 2, "nota": "Medição marcada para sexta-feira às 14h.", "valorFinal": 4200, "previsao": "2026-12-05" }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contato — Megha Portões</title>
+<meta name="description" content="Fale com a Megha Portões em Camaçari-BA: WhatsApp, Instagram e endereço.">
+<meta name="theme-color" content="#050b1e">
+<meta property="og:title" content="Megha Portões — Lado a lado da Tecnologia e Inovação">
+<meta property="og:description" content="Monte seu orçamento online e veja seu portão ganhar forma na tela.">
+<meta property="og:image" content="assets/img/banner.webp">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;0,800;1,700;1,800;1,900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pieces.css">
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<section class="page-hero"><div class="wrap"><span class="eyebrow">Contato</span><h1>Fale com o <span class="grad">Carlito</span></h1><p>Escolha o canal que preferir ou mande uma mensagem direto daqui.</p></div></section>
+<section style="padding-top:26px"><div class="wrap contact-grid">
+  <div>
+    <a class="contact-card wa" href="https://wa.me/5571988604484?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Megha%20Port%C3%B5es." target="_blank" rel="noopener"><svg class="ic"><use href="#i-whatsapp"/></svg><div><b>WhatsApp 71 98860-4484</b><span>Toque para conversar</span></div></a><a class="contact-card wa" href="https://wa.me/5571999505432?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Megha%20Port%C3%B5es." target="_blank" rel="noopener"><svg class="ic"><use href="#i-whatsapp"/></svg><div><b>WhatsApp 71 99950-5432</b><span>Toque para conversar</span></div></a>
+    <a class="contact-card" href="https://www.instagram.com/meghaportoes2025/" target="_blank" rel="noopener"><svg class="ic"><use href="#i-instagram"/></svg><div><b>@meghaportoes2025</b><span>Veja nosso Instagram</span></div></a>
+    <a class="contact-card" href="https://www.google.com/maps/search/?api=1&query=Rua+Maria+Clara+Garcez+Monte+Negro+Cama%C3%A7ari+BA" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg><div><b>Rua Maria Clara Garcez, S/N</b><span>Bairro Monte Negro · Estradas da Cascalheiras · Camaçari – BA</span></div></a>
+    <form class="card" id="msgForm" novalidate style="margin-top:20px"><h3>Mensagem rápida</h3>
+      <div class="field"><label for="m-nome">Seu nome</label><input id="m-nome" autocomplete="name" placeholder="Seu nome"></div>
+      <div class="field"><label for="m-ass">Assunto</label><select id="m-ass"><option>Orçamento</option><option>Dúvida sobre pedido</option><option>Visita / Medição</option><option>Outro</option></select></div>
+      <div class="field"><label for="m-msg">Mensagem</label><textarea id="m-msg" rows="4" placeholder="Conte o que você precisa…"></textarea></div>
+      <button class="btn wa" type="submit"><svg class="ic"><use href="#i-whatsapp"/></svg><span>Enviar pelo WhatsApp</span></button></form>
+  </div>
+  <div class="map"><iframe title="Mapa — Megha Portões" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Rua+Maria+Clara+Garcez+Monte+Negro+Cama%C3%A7ari+BA&output=embed"></iframe></div>
+</div></section>
+<section><div class="wrap" style="max-width:820px"><div class="section-head center reveal"><span class="eyebrow">Dúvidas</span><h2>Perguntas <span class="grad">frequentes</span></h2></div>
+<details class="reveal"><summary>O valor do orçamento online é o preço final?</summary><p>Não. É uma estimativa de referência. O valor final é confirmado pelo Carlito depois da medição no local.</p></details>
+<details class="reveal"><summary>Vocês fazem a instalação?</summary><p>Sim. No orçamento você escolhe se quer instalação pela Megha ou não.</p></details>
+<details class="reveal"><summary>Como acompanho o meu pedido?</summary><p>Em “Minha área” você vê seus pedidos e pode buscar pelo código recebido ao finalizar o orçamento.</p></details>
+<details class="reveal"><summary>Quais serviços vocês fazem?</summary><p>Esquadrias em alumínio, vidro temperado, ACM, ripado, gabinetes, guarda-corpo, corrimãos, portões e outros serviços sob medida.</p></details>
+</div></section>
+</main>
+<footer id="site-footer"></footer>
+<script src="js/config.js"></script>
+<script src="js/pieces.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.getElementById('msgForm').addEventListener('submit',function(e){e.preventDefault();
+ var n=document.getElementById('m-nome').value.trim(),a=document.getElementById('m-ass').value,m=document.getElementById('m-msg').value.trim();
+ if(!n||!m){MeghaUI.toast('Preencha nome e mensagem');return;}
+ window.open(MeghaUI.wa('Olá! Sou '+n+'.\nAssunto: '+a+'\n'+m),'_blank');});
+</script>
+</body>
+</html>
